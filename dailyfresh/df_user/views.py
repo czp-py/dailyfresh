@@ -13,7 +13,7 @@ def register(request):
     return render(request, 'df_user/register.html', title)
 
 
-# 检查用户名是否存在
+# 注册时检查用户名是否存在
 def register_exit(request):
     uname = request.GET.get('uname')
     count = UserInfo.objects.filter(uname=uname).count()
@@ -85,7 +85,7 @@ def login_handle(request):
         return render(request, 'df_user/login.html', context)
 
 
-# 用户中心个人信息页
+# 用户中心-个人信息页
 def info(request):
     user_email = UserInfo.objects.get(id=request.session['user_id']).uemail
     context={
@@ -96,13 +96,13 @@ def info(request):
     return render(request, 'df_user/user_center_info.html', context)
 
 
-# 用户中心订单页
+# 用户中心-订单页
 def order(request):
     context = {'title':'天天生鲜-用户中心'}
     return render(request, 'df_user/user_center_order.html/', context)
 
 
-# 用户中心收货地址页
+# 用户中心-收货地址页
 def site(request):
     user = UserInfo.objects.get(id=request.session['user_id'])
     if request.method == 'POST':

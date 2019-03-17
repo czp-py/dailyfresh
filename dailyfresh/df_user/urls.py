@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from . import views
 
-urlpatterns=[
+urlpatterns = [
     url(r'^register/$', views.register),
     url(r'^login/$', views.login),
     url(r'^register_exit', views.register_exit),
@@ -10,5 +10,4 @@ urlpatterns=[
     url(r'^info/$', views.info),
     url(r'^order/$', views.order),
     url(r'^site/$', views.site),
-
 ]
