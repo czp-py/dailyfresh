@@ -2,7 +2,9 @@
 from django.shortcuts import render,redirect
 from django.http import JsonResponse,HttpResponseRedirect
 from .models import *
+from df_goods.models import *
 from hashlib import sha1
+from . import user_decorator
 
 # Create your views here.
 
@@ -67,7 +69,9 @@ def login_handle(request):
         s1.update(upwd.encode('utf-8'))
         # 判断密码是否正确
         if s1.hexdigest() == users[0].upwd:
-            red = HttpResponseRedirect('/user/info/')
+            # 记录登陆前的页面
+            url = request.COOKIES.get('url', '/')
+            red = HttpResponseRedirect(url)
             # 是否勾选记住用户选项
             if remember != 0:
                 red.set_cookie('uname', uname)
@@ -85,24 +89,43 @@ def login_handle(request):
         return render(request, 'df_user/login.html', context)
 
 
+def logout(request):
+    request.session.flush()
+    return redirect('/')
+
+
 # 用户中心-个人信息页
+@user_decorator.login
 def info(request):
     user_email = UserInfo.objects.get(id=request.session['user_id']).uemail
+    # 浏览记录
+    goods_ids = request.COOKIES.get('goods_ids', '')
+    goods_ids1 = goods_ids.split(',')
+    goods_list = []
+    print(goods_ids1)
+    for goods_id in goods_ids1:
+        if goods_id != '':
+            goods_list.append(GoodsInfo.objects.get(id=int(goods_id)))
+
     context={
         'title':'天天生鲜-用户中心',
         'user_email':user_email,
-        'user_name':request.session['user_name']
+        'user_name':request.session['user_name'],
+        'page_name':1,
+        'goods_list':goods_list
     }
     return render(request, 'df_user/user_center_info.html', context)
 
 
 # 用户中心-订单页
+@user_decorator.login
 def order(request):
     context = {'title':'天天生鲜-用户中心'}
     return render(request, 'df_user/user_center_order.html/', context)
 
 
 # 用户中心-收货地址页
+@user_decorator.login
 def site(request):
     user = UserInfo.objects.get(id=request.session['user_id'])
     if request.method == 'POST':

@@ -10,10 +10,11 @@
 
 	function minus(){
 		num = parseFloat($('.num_show').val());
-		if (num > 1){
-			$('.num_show').val(num-1);
-			$('.num_show').blur();
+		if (num <= 1){
+			return;
 		}
+		$('.num_show').val(num-1);
+		$('.num_show').blur();
 	}
 
 	$(function(){
@@ -49,7 +50,7 @@
 			<div class="goods_num clearfix">
 				<div class="num_name fl">数 量：</div>
 				<div class="num_add fl">
-					<input type="text" class="num_show fl" value="1">
+					<input type="text" class="num_show fl" value="1" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')">
 					<a href="javascript:add()" class="add fr">+</a>
 					<a href="javascript:minus()" class="minus fr">-</a>
 				</div> 
