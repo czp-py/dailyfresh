@@ -3,6 +3,7 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse,HttpResponseRedirect
 from .models import *
 from df_goods.models import *
+from df_cart.models import *
 from hashlib import sha1
 from . import user_decorator
 
@@ -78,8 +79,10 @@ def login_handle(request):
             else:
                 red.set_cookie('uname', '', max_age=-1)
             # 在session中存储用户信息
+            cart_count = CartInfo.objects.filter(user_id=int(users[0].id)).count()
             request.session['user_id'] = users[0].id
             request.session['user_name'] = uname
+            request.session['cart_count'] = cart_count
             return red
         else:
             context = {'title':'天天生鲜-登陆', 'error_name':0, 'error_pwd':1, 'uname':uname, 'upwd':upwd}
