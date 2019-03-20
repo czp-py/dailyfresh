@@ -12,10 +12,10 @@
 				//获取数量
 				count = $(this).prev().find('input').val();
 				//获取单价
-				price = $(this).prev().prev().text();
+				price = $(this).prev().prev().children('span').text();
 				//计算小计
 				total0 = parseFloat(count) * parseFloat(price);
-				$(this).text(total0.toFixed(2));
+				$(this).text(total0.toFixed(2)+'元');
 				total1+=total0;
 				total_count1 ++;
 				total_count2 ++;
@@ -111,7 +111,7 @@
 </script>
 {%endblock head%}
 {%block newbody%}
-<form action="/order/" method="get"></form>
+<form action="/order/" method="get">
 	<div class="total_count">全部商品<em class="total_count1">0</em>件</div>
 	<ul class="cart_list_th clearfix">
 		<li class="col01">商品名称</li>
@@ -128,7 +128,7 @@
 		<li class="col02"><img src="/static/{{cart.goods.gpic}}"></li>
 		<li class="col03">{{cart.goods.gname}}</li>
 		<li class="col04">{{cart.goods.gunit}}</li>
-		<li class="col05">{{cart.goods.gprice}}</li>
+        <li class="col05"><span>{{cart.goods.gprice}}</span>元</li>
 		<li class="col06">
 			<div class="num_add">
 				<a href="javascript:;" class="add fl">+</a>
@@ -146,7 +146,7 @@
 		<li class="col03">合计(不含运费)：<span>¥</span>
 			<em id="total">0</em>
 			<br>共计<b class="total_count2">0</b>件商品</li>
-		<li class="col04"><input type="submit" value="去结算"></a></li>
+		<li class="col04"><input type="submit" value=" 	去结算 	 "></li>
 	</ul>
 </form>
 {%endblock newbody%}

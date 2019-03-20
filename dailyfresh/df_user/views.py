@@ -4,8 +4,10 @@ from django.http import JsonResponse,HttpResponseRedirect
 from .models import *
 from df_goods.models import *
 from df_cart.models import *
+from df_order.models import *
 from hashlib import sha1
 from . import user_decorator
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -111,19 +113,29 @@ def info(request):
             goods_list.append(GoodsInfo.objects.get(id=int(goods_id)))
 
     context={
-        'title':'天天生鲜-用户中心',
-        'user_email':user_email,
-        'user_name':request.session['user_name'],
-        'page_name':1,
-        'goods_list':goods_list
+        'title': '天天生鲜-用户中心',
+        'user_email': user_email,
+        'user_name': request.session['user_name'],
+        'page_name': 1,
+        'goods_list': goods_list
     }
     return render(request, 'df_user/user_center_info.html', context)
 
 
 # 用户中心-订单页
 @user_decorator.login
-def order(request):
-    context = {'title':'天天生鲜-用户中心'}
+def order(request, oindex):
+    user_id = request.session['user_id']
+    orderinfos = list(OrderInfo.objects.filter(user_id=user_id))
+    i = 0
+    for orderinfo in orderinfos:
+        orderinfos[i]=[orderinfos[i],OrderDetailInfo.objects.filter(order_id=orderinfo.oid)]
+        i += 1
+    print(orderinfos)
+    # 分页处理
+    paginator = Paginator(orderinfos, 5)
+    page = paginator.page(int(oindex))
+    context = {'title':'天天生鲜-用户中心', 'orderinfos': orderinfos, 'page': page, 'paginator': paginator}
     return render(request, 'df_user/user_center_order.html/', context)
 
 
